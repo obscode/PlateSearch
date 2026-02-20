@@ -46,11 +46,11 @@ def validate_field_list(arg):
 
 def resolveName(name, database):
    sesame_database.set(database)
-   #try:
-   sky = get_icrs_coordinates(name)
-   return sky.ra.value,sky.dec.value
-   #except:
-   #   return None,None
+   try:
+      sky = get_icrs_coordinates(name)
+      return sky.ra.value,sky.dec.value
+   except:
+      return None,None
 
 def index(request):
    return HttpResponse("This is a test of the emergency broadcasting service.")
