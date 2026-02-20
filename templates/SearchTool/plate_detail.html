@@ -1,0 +1,54 @@
+{% extends "base_site.html" %}
+{% load myfilters %}
+{% block breadcrumbs %}<div class="breadcrumbs">
+   <a href="../..">Home</a> &rsaquo;
+   <a href="..">Plate Search</a> &rsaquo;
+   {{ plate.plateid }} </div> {% endblock %}
+{% block pretitle %} <h2> Plate {{ plate.plate|greek|safe }} {% if plate.exp_num %} ({{ plate.exp_num }}) {% endif %}, {{ plate.location }} </h2> {% endblock %}
+{% block content %}
+<div id="content-main">
+<table border=0>
+   <tr><td>
+      <table cellspacing="0" border=0>
+         <tr><td>Object:</td><td> {{ plate.object }}</td></tr>
+         <tr><td>RA/DEC: </td><td> {{ plate.ra|angle2hms|safe }} 
+                                   {{ plate.decl|angle2dms|safe }} </td></tr>
+         <tr><td>Observer: </td><td> {{ plate.observer|NoneFilter|safe }} </td></tr>
+         <tr><td>Assistant: </td><td> {{ plate.assistant|NoneFilter|safe }} </td></tr>
+         <tr><td>Date: </td><td> {{ plate.date|date2ymd|safe }} </td></tr>
+         <tr><td>Plate Size: </td><td> {{ plate.size|NoneFilter|safe }} </td></tr>
+         <tr><td>filter: </td><td> {{ plate.filter|NoneFilter|safe }} </td></tr>
+         <tr><td>Emulsion: </td><td> {{ plate.emulsion|NoneFilter|safe }} </td></tr>
+         <tr><td>Begin Exposure: </td><td> {{ plate.raw_begin|NoneFilter|safe }} </td></tr>
+         <tr><td>End Exposure: </td><td> {{ plate.raw_end|NoneFilter|safe }} </td></tr>
+         <tr><td>Total Exposure: </td><td> {{ plate.total|NoneFilter|safe }} </td></tr>
+         <tr><td>HA @end: </td><td> {{ plate.raw_ha_end|NoneFilter|safe }} </td></tr>
+         <tr><td>Location: </td><td> {{ plate.location|NoneFilter|safe }} </td></tr>
+      </table>
+   </td><td> 
+   </td></tr>
+</table>
+<HR>
+<h3>Remarks</h3>
+<UL>
+   {% if plate.remarks %}
+      <LI> {{ plate.remarks }}
+   {% endif %}
+   {% if plate.coor_source == "SIMBAD" %}
+   <LI>
+      Coordinates listed were found by matching object name to the SIMBAD database.
+   {% endif %}
+   {% if plate.coor_source == "NED" %}
+   <LI>
+      Coordinates listed were found by matching object name to the NED database.
+   {% endif %}
+   {% if plate.coor_source == "precessed" %}
+      <LI>
+      Coordinates listed were found by precessing the coordinates listed on the plate ( {{ plate.raw_ra }},
+      {{ plate.raw_dec }} ) from the observed date to J2000.
+   {% endif %}
+<LI> This entry was originally entered in spreadsheet {{ plate.xls }}, sheet {{ plate.sheet }}, row {{ plate.row }}
+</UL>
+
+</div>
+{% endblock %}

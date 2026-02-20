@@ -1,0 +1,54 @@
+{% extends "base_site.html" %}
+{% load myfilters %}
+{% block extrahead %}
+<script src="/media/js/sorttable.js"></script>
+{% endblock %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="../">Home</a> &rsaquo;<a href="">Plate Search</a> 
+&rsaquo; Result Set</div> {% endblock %}
+{% block pretitle %} <h2>Search Results</h2> {% endblock %}
+{% block content %}
+<div id="content-main">
+   {% if plate_list %}
+   <p> Found {{ plate_list|length }} matches.</p>
+      <font size=-3 color="grey">Click on table headers to sort</font>
+      <table class='sortable' cellspacing="0" border=1 id="result_list">
+         <thead>
+            <tr>
+               <th width=8 nowrap>Rec. no</th>
+               <th width=8 nowrap>Plate ID</th>
+               <th nowrap>Object</th>
+               <th width=12 nowrap>RA</th>
+               <th width=12 nowrap>DEC</th>
+               <th width=10 nowrap>Date</th>
+               <th width=10 nowrap>Observer</th>
+               <th width=10 nowrap>Telescope</th>
+               <th width=6 nowrap>Size</th>
+               <th width=9 nowrap>Exp. Time</th>
+               <th width=6 nowrap>Filter</th>
+               <th width=6 nowrap>Location</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for obj in plate_list %}
+            <tr class="{% cycle 'row1' 'row2' %}">
+               <th><a href="../SearchTool/{{ obj.pk }}/">{{ obj.pk }}</a></th>
+               <td>{{ obj.plate|NoneFilter|greek|safe }}</td>
+               <td>{{ obj.object|NoneFilter|safe }}</td>
+               <td>{{ obj.ra|angle2hms|safe }}</td>
+               <td>{{ obj.decl|angle2dms|safe }}</td>
+               <td>{{ obj.date|date2ymd|safe }} </td>
+               <td>{{ obj.observer|NoneFilter|safe }} </td>
+               <td>{{ obj.telescope|NoneFilter|safe }} </td>
+               <td>{{ obj.size|NoneFilter|safe }} </td>
+               <td>{{ obj.total|NoneFilter|safe }} </td>
+               <td>{{ obj.filter|NoneFilter|safe }} </td>
+               <td>{{ obj.location|NoneFilter|safe }} </td>
+            </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+   {% else %}
+      <p> No plates found with your criteria.  Try again.</p>
+   {% endif %}
+</div>
+{% endblock %}

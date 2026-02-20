@@ -1,0 +1,105 @@
+{% extends "base_site.html" %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="..">Home</a> &rsaquo;Plate Search</div> {% endblock %}
+{% block pretitle %} <h2>Plate Search</h2> {% endblock %}
+{% block content %}
+<div id="content-main">
+   <P>
+   You can search for plates either based on celestial coordinates (J2000) or by searching for patterns in the 
+   various database fields.  Please see the <a href="#notes">notes</a> below for important information about how coordinates were
+   assigned to the plates and other search strategies.
+   <P>
+   
+   <div class="module" id="search form">
+      <h2>Search Parameters</h2>
+
+      <form action="" method="post">{% csrf_token %}
+        {{ form.non_field_errors }}
+         <table border=0>
+            <tr> <th nowrap>
+               <input type=radio name="search_type" value="coord"
+               {% if search_type == "coord" %} checked {% endif %}>
+               Coordinate Search:
+            </td><td style="text-align: left;">
+            Use NED or SIMBAD to find coordinates:<br>
+            Object:  {{ form.name.errors }} {{ form.name }} {{ form.db_source.errors }}
+            <input type=radio name="db_source" value="NED" {%if db_source == "NED" %} checked {% endif %}> NED
+            <input type=radio name="db_source" value="SIMBAD" {%if db_source == "SIMBAD" %} checked {% endif %}> SIMBAD
+            <br><br>
+            or enter your own coordinates:<br>
+            RA: {{ form.ra.errors }} {{ form.ra }}
+            DEC: {{ form.dec.errors }} {{ form.dec }}<br><br>
+            Search radius: {{ form.radius.errors }} {{ form.radius }} arc-min.
+            </td>
+            </tr>
+            <tr><th nowrap>
+               <input type=radio name="search_type" value="pattern"
+               {% if search_type == "pattern" %} checked {% endif %}>
+               Pattern Search:
+               </td><td style="text-align: left;">Find
+               {{ form.pattern.errors }} {{ form.pattern }}
+               {{ form.pattern_type }}<br>
+               in the following fields: <br>{{ form.field_list.errors }} {{ form.field_list }}
+               Note: for complicated pattern searches, use 
+               <a href="http://www.regular-expressions.info/refquick.html">regular expressions</a>.
+               For example, ".*" matches zero or more characters.
+               To find observer Schweizer including mispellings, you could use "Sch.*er".
+
+               </td>
+            </tr>
+            <tr><th nowrap>
+                  <input type=radio name="search_type" value="all"
+                  {% if search_type == "all" %} checked {% endif %}>
+                  Show All</th>
+               <td> <b>Warning:</b> This will return all entries. Use Filters below to restrict results.<br></td>
+            </tr>
+
+         </table>
+         <h2>Filters</h2>
+         Use these to narrow down the results.
+         <br>
+         <table border=0>
+            <tr><th> Observation Date: </th>
+               <td style="text-align: left;">between {{ form.date_low.errors }} {{ form.date_low }} and
+            {{ form.date_high.errors }} {{ form.date_high }}
+            <font size=-2 color=grey>(mm/dd/yyyy)</td>
+          </tr>
+          <tr><th> Telescope: </th>
+             <td style="text-align: left;">{{ form.telescope_list.errors }}
+               {{ form.telescope_list }}
+            </td>
+          </tr>
+       </table>
+         <br><input type="submit" value="Search">
+
+   </div>
+
+   <a label="notes"><h2>Notes</h2></a>
+   <UL>
+      <LI>The meta-data for each plate in the database is based solely on
+          the information printed on the envelope and so many fields
+          are missing. As a result, searching for "Hubble" in the Observer 
+          field (for example) will yield disappointing results! But the plate
+          ID potentially contains some of this information. Please refer
+          to <a href="https://carnegiescience.edu/deciphering-plate-ids">this guide</a> 
+          for search tips using the plate IDs.
+      <LI>Currently, 81% of the plates have J2000 coordinates.  These were determined in one of two ways: 1)
+      the coordinates listed on the plate were precessed from the epoch of observation, if known; or 2) the
+      object name was used to determined approximate coordinates using NED or SIMBAD.
+      <LI>15% of plates don't have J2000 coordinates, but do have object strings that were unrecognized by SIMBAD and NED.  We are working on identifying
+      these fields, but for now the only way to find these
+      in a search is to use pattern searches (2nd option above).  The remaining 4% of plates in the database
+      have no coordinate or object names.
+      <LI>The information on telescope used for the observations is very 
+         sparse, due to 
+         incomplete data on the plates and conflicting nomenclature for
+         the plate IDs (for example a prefix 'H' could stand for 'Hooker'
+         or 'Hubble').  We are working to sort this out.  In the meantime,
+         <b>only 36% of the plates have reliable telescope data, so if you filter
+            by telescope, keep in mind you are effectively searching 
+            only a third of the
+         database.</b>
+   </UL>
+   </form>
+
+</div>
+{% endblock %}
