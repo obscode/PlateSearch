@@ -55,6 +55,9 @@ html[data-theme="light"],
     --object-tools-bg: var(--close-button-bg);
     --object-tools-hover-bg: var(--close-button-hover-bg);
 
+    --base-font-size: 24px;
+    font-size: var(--base-font-size);
+
     --font-family-primary:
         -apple-system,
         BlinkMacSystemFont,
